@@ -94,7 +94,8 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
+vim.wo.relativenumber = true
 
 vim.cmd 'set expandtab'
 vim.cmd 'set tabstop=2'
@@ -249,17 +250,54 @@ require('lazy').setup({
   -- Add oil.nvim plugin
   {
     'stevearc/oil.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' }, -- optional, for file icons
+    dependencies = { 'echasnovski/mini.icons' }, -- optional, for file icons
     config = function()
       local oil = require 'oil'
       oil.setup()
       vim.keymap.set('n', '-', oil.toggle_float, { desc = 'Toggle Oil floating window' })
     end,
   },
+  -- Add Harpoon plugin
   {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
     dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require 'harpoon'
+
+      -- REQUIRED
+      harpoon:setup()
+      -- REQUIRED
+
+      -- Keymaps for Harpoon
+      vim.keymap.set('n', '<leader>a', function()
+        harpoon.mark.add_file()
+      end, { desc = 'Add file to Harpoon' })
+      vim.keymap.set('n', '<C-e>', function()
+        harpoon.ui.toggle_quick_menu()
+      end, { desc = 'Toggle Harpoon quick menu' })
+
+      vim.keymap.set('n', '<C-h>', function()
+        harpoon.ui.nav_file(1)
+      end, { desc = 'Navigate to Harpoon file 1' })
+      vim.keymap.set('n', '<C-t>', function()
+        harpoon.ui.nav_file(2)
+      end, { desc = 'Navigate to Harpoon file 2' })
+      vim.keymap.set('n', '<C-n>', function()
+        harpoon.ui.nav_file(3)
+      end, { desc = 'Navigate to Harpoon file 3' })
+      vim.keymap.set('n', '<C-s>', function()
+        harpoon.ui.nav_file(4)
+      end, { desc = 'Navigate to Harpoon file 4' })
+
+      -- Toggle previous & next buffers stored within Harpoon list
+      vim.keymap.set('n', '<C-S-P>', function()
+        harpoon.ui.nav_prev()
+      end, { desc = 'Navigate to previous Harpoon file' })
+      vim.keymap.set('n', '<C-S-N>', function()
+        harpoon.ui.nav_next()
+      end, { desc = 'Navigate to next Harpoon file' })
+    end,
   },
 
   -- See `:help gitsigns` to understand what the configuration keys do
@@ -806,14 +844,88 @@ require('lazy').setup({
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'vague2k/vague.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    -- priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'vague'
+      --vim.cmd.colorscheme 'vague'
 
       -- You can configure highlights by doing something like:
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'catppuccin/nvim',
+    --priority = 1000, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to lackluster-mint manually
+      --vim.cmd.colorscheme 'catppuccin'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'slugbyte/lackluster.nvim',
+    -- priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to lackluster-mint manually
+      -- vim.cmd.colorscheme 'lackluster-mint'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'sho-87/kanagawa-paper.nvim',
+    lazy = false,
+    priority = 1000, -- Lower priority than the default colorscheme
+    opts = {},
+    init = function()
+      -- Uncomment the next line if you want to switch to kanagawa-paper manually
+      vim.cmd.colorscheme 'kanagawa-paper'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'folke/tokyonight.nvim',
+    -- priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to tokyonight manually
+      -- vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'Sly-Harvey/radium.nvim',
+    -- priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to radium manually
+      -- vim.cmd.colorscheme 'radium'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'vague2k/vague.nvim',
+    priority = 1000, -- Ensure it loads before all other start plugins
+    init = function()
+      -- Load the default colorscheme here
+      vim.cmd.colorscheme 'vague'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'rebelot/kanagawa.nvim',
+    -- priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to kanagawa manually
+      -- vim.cmd.colorscheme 'kanagawa'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'nyoom-engineering/oxocarbon.nvim',
+    -- priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to oxocarbon manually
+      -- vim.cmd.colorscheme 'oxocarbon'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
