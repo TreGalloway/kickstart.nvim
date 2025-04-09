@@ -86,13 +86,21 @@ P.S. You can delete this when you're done too. It's your config now! :)
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
+--
+-- Keypmap to exit insert
+vim.keymap.set('i', 'jj', '<Esc>')
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
+vim.wo.relativenumber = true
 
+vim.cmd 'set expandtab'
+vim.cmd 'set tabstop=2'
+vim.cmd 'set softtabstop=2'
+vim.cmd 'set shiftwidth=2'
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -239,6 +247,84 @@ require('lazy').setup({
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })
   --
+  -- Add oil.nvim plugin
+  {
+    'stevearc/oil.nvim',
+    dependencies = { 'echasnovski/mini.icons' }, -- optional, for file icons
+    config = function()
+      local oil = require 'oil'
+      oil.setup()
+      vim.keymap.set('n', '-', oil.toggle_float, { desc = 'Toggle Oil floating window' })
+    end,
+  },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+    -- use opts = {} for passing setup options
+    -- this is equivalent to setup({}) function
+  },
+  -- Add Harpoon plugin
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require 'harpoon'
+
+      -- REQUIRED: setup harpoon
+      harpoon:setup()
+
+      -- Basic keymaps
+      vim.keymap.set('n', '<leader>a', function()
+        harpoon:list():add()
+      end, { desc = 'Add file to Harpoon' })
+      vim.keymap.set('n', '<C-e>', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end, { desc = 'Toggle Harpoon menu' })
+
+      -- Navigation keymaps
+      vim.keymap.set('n', '<C-h>', function()
+        harpoon:list():select(1)
+      end, { desc = 'Harpoon buffer 1' })
+      vim.keymap.set('n', '<C-t>', function()
+        harpoon:list():select(2)
+      end, { desc = 'Harpoon buffer 2' })
+      vim.keymap.set('n', '<C-n>', function()
+        harpoon:list():select(3)
+      end, { desc = 'Harpoon buffer 3' })
+      vim.keymap.set('n', '<C-s>', function()
+        harpoon:list():select(4)
+      end, { desc = 'Harpoon buffer 4' })
+
+      -- Toggle previous & next buffers
+      vim.keymap.set('n', '<C-S-P>', function()
+        harpoon:list():prev()
+      end, { desc = 'Previous Harpoon file' })
+      vim.keymap.set('n', '<C-S-N>', function()
+        harpoon:list():next()
+      end, { desc = 'Next Harpoon file' })
+    end,
+  },
+
+  -- Auto changes theme based on system
+  {
+    'f-person/auto-dark-mode.nvim',
+    config = function()
+      require('auto-dark-mode').setup {
+        update_interval = 1000,
+        set_dark_mode = function()
+          vim.cmd 'colorscheme onedark' -- Use OneDark for dark mode
+        end,
+        set_light_mode = function()
+          vim.cmd 'colorscheme onelight' -- Use OneLight for light mode
+        end,
+      }
+      -- Uncomment the following line to enable auto-dark-mode on startup
+      -- require('auto-dark-mode').init()
+    end,
+  },
+
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -318,6 +404,7 @@ require('lazy').setup({
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
+
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
       -- it can fuzzy find! It's more than just a "file finder", it can search
@@ -781,15 +868,112 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    'vague2k/vague.nvim',
+    priority = 500, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'vague'
 
       -- You can configure highlights by doing something like:
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'olimorris/onedarkpro.nvim',
+    priority = 1000, -- Ensure it loads first
+    config = function()
+      -- Optional: Configure the theme here
+      require('onedarkpro').setup {
+        -- Your configuration options here
+        -- See https://github.com/olimorris/onedarkpro.nvim for options
+      }
+      -- Set the colorscheme
+      vim.cmd 'colorscheme onedark_dark' -- or another variant like onedark, onelight, etc.
+    end,
+  },
+  {
+    'RRethy/base16-nvim',
+    priority = 500, -- Lower priority than the default colorscheme
+    --lazy = false,
+    init = function()
+      vim.cmd.colorscheme 'base16-black-metal-bathory'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+
+  {
+    'catppuccin/nvim',
+    -- priority = 1000, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to lackluster-mint manually
+      vim.cmd.colorscheme 'catppuccin'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'slugbyte/lackluster.nvim',
+    priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to lackluster-mint manually
+      -- vim.cmd.colorscheme 'lackluster-mint'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'sho-87/kanagawa-paper.nvim',
+    lazy = false,
+    priority = 500, -- Lower priority than the default colorscheme
+    opts = {},
+    init = function()
+      -- Uncomment the next line if you want to switch to kanagawa-paper manually
+      -- vim.cmd.colorscheme 'kanagawa-paper'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'folke/tokyonight.nvim',
+    -- priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to tokyonight manually
+      -- vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'Sly-Harvey/radium.nvim',
+    priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to radium manually
+      -- vim.cmd.colorscheme 'radium'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'vague2k/vague.nvim',
+    priority = 1000, -- Ensure it loads before all other start plugins
+    init = function()
+      -- Load the default colorscheme here
+      vim.cmd.colorscheme 'vague'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'rebelot/kanagawa.nvim',
+    -- priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to kanagawa manually
+      -- vim.cmd.colorscheme 'kanagawa'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'nyoom-engineering/oxocarbon.nvim',
+    -- priority = 500, -- Lower priority than the default colorscheme
+    init = function()
+      -- Uncomment the next line if you want to switch to oxocarbon manually
+      -- vim.cmd.colorscheme 'oxocarbon'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
@@ -877,11 +1061,11 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
