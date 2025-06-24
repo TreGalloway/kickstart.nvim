@@ -251,6 +251,33 @@ require('lazy').setup({
     event = 'InsertEnter',
     config = true,
   },
+  -- Supermaven plugin
+  {
+    'supermaven-inc/supermaven-nvim',
+    config = function()
+      require('supermaven-nvim').setup {}
+    end,
+  },
+  --Typr
+  {
+    'nvzone/typr',
+    dependencies = {
+      'nvzone/volt',
+    },
+    lazy = true,
+    cmd = 'Typr',
+    config = function()
+      require('typr').setup {
+        -- Initialize stats storage
+        stats = {
+          times = {}, -- Ensure times table exists
+          save_dir = vim.fn.stdpath 'data' .. '/typr_stats', -- Set save directory
+        },
+        -- Other options you might want to set
+        save_stats = true, -- Enable stats saving
+      }
+    end,
+  },
   -- Add Harpoon plugin
   {
     'ThePrimeagen/harpoon',
@@ -284,6 +311,33 @@ require('lazy').setup({
         harpoon:list():next()
       end, { desc = 'Next Harpoon file' })
     end,
+  },
+  --Ray-x gopher
+  {
+    'ray-x/go.nvim',
+    dependencies = { -- optional packages
+      'ray-x/guihua.lua',
+      'neovim/nvim-lspconfig',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    opts = {
+      -- lsp_keymaps = false,
+      -- other options
+    },
+    config = function(lp, opts)
+      require('go').setup(opts)
+      local format_sync_grp = vim.api.nvim_create_augroup('GoFormat', {})
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        pattern = '*.go',
+        callback = function()
+          require('go.format').goimports()
+        end,
+        group = format_sync_grp,
+      })
+    end,
+    event = { 'CmdlineEnter' },
+    ft = { 'go', 'gomod' },
+    build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
   },
 
   -- Auto changes theme based on system
