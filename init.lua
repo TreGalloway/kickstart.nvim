@@ -311,8 +311,7 @@ require('lazy').setup({
         harpoon:list():next()
       end, { desc = 'Next Harpoon file' })
     end,
-  },
-  --Ray-x gopher
+  }, --Ray-x gopher
   {
     'ray-x/go.nvim',
     dependencies = { -- optional packages
@@ -341,7 +340,7 @@ require('lazy').setup({
   },
 
   -- Auto changes theme based on system
-  {
+  --[[{
     'f-person/auto-dark-mode.nvim',
     config = function()
       require('auto-dark-mode').setup {
@@ -356,8 +355,7 @@ require('lazy').setup({
       -- Enable the plugin on startup
       require('auto-dark-mode').init()
     end,
-  },
-
+  }, --]]
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -610,11 +608,20 @@ require('lazy').setup({
   {
     'rose-pine/neovim',
     name = 'rose-pine',
-    priority = 1000, -- Make sure it loads before other plugins
+    --priority = 1000, -- Make sure it loads before other plugins
+  },
+  {
+    'AlexvZyl/nordic.nvim',
+    lazy = false,
+    -- priority = 1000,
+    config = function()
+      --   vim.cmd.colorscheme 'nordic'
+      vim.cmd.hi 'Comment gui=none'
+    end,
   },
   {
     'vague2k/vague.nvim',
-    priority = 500,
+    --priority = 1000,
     init = function()
       -- vim.cmd.colorscheme 'vague'
       vim.cmd.hi 'Comment gui=none'
@@ -622,7 +629,7 @@ require('lazy').setup({
   },
   {
     'olimorris/onedarkpro.nvim',
-    priority = 1000,
+    --priority = 1000,
     config = function()
       require('onedarkpro').setup {}
       -- vim.cmd 'colorscheme onedark_dark'
@@ -645,7 +652,6 @@ require('lazy').setup({
   },
   {
     'slugbyte/lackluster.nvim',
-    priority = 500,
     init = function()
       -- vim.cmd.colorscheme 'lackluster-mint'
       vim.cmd.hi 'Comment gui=none'
@@ -654,7 +660,6 @@ require('lazy').setup({
   {
     'sho-87/kanagawa-paper.nvim',
     lazy = false,
-    priority = 500,
     opts = {},
     init = function()
       -- vim.cmd.colorscheme 'kanagawa-paper'
@@ -678,8 +683,9 @@ require('lazy').setup({
   },
   {
     'rebelot/kanagawa.nvim',
+    priority = 1000,
     init = function()
-      -- vim.cmd.colorscheme 'kanagawa'
+      vim.cmd.colorscheme 'kanagawa'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
